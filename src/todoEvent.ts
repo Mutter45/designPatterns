@@ -1,28 +1,41 @@
 import { createTodoItem } from "./template";
+import { addData, removeData, changeDataComplete, utils } from "./decorator";
 export interface TodoData {
   id: number;
   content: string;
   complete: boolean;
 }
-export default class TodoEvent {
+@utils
+class TodoEvent {
   private static instance: TodoEvent;
-  public addItem(data: TodoData, container: HTMLElement) {
+  private container: HTMLElement;
+  constructor(container: HTMLElement) {
+    this.container = container;
+    // console.log(this, this.plus(1, 2));
+  }
+  @addData
+  public addItem(data: TodoData) {
     const item = createTodoItem(data);
     const div = document.createElement("div");
     div.className = "todo-item";
     div.innerHTML = item;
-    container.appendChild(div);
+    this.container.appendChild(div);
   }
-  public removeItem(tag: HTMLElement) {
+  @removeData
+  public removeItem(id: number) {
+    const tag = document.querySelector(`[data-id="${id}"]`);
     tag.parentElement.remove();
   }
-  public changeItemComplete(tag: HTMLInputElement, complete?: boolean) {
-    tag.nextElementSibling.classList.toggle("completed", tag.checked);
+  @changeDataComplete
+  public changeItemComplete(id: number, complete?: boolean) {
+    const tag = document.querySelector(`[data-id="${id}"]`);
+    tag.nextElementSibling.classList.toggle("completed", complete);
   }
-  public static create() {
+  public static create(container: HTMLElement) {
     if (!this.instance) {
-      this.instance = new TodoEvent();
+      this.instance = new TodoEvent(container);
     }
     return this.instance;
   }
 }
+export default TodoEvent;

@@ -8,21 +8,21 @@ import TodoEvent from "./todoEvent";
    * removeItem
    * changeItemComplete
    */
-  const todoEvent = TodoEvent.create();
+  const todoEvent = TodoEvent.create(todoContainer);
   function init() {
     bindEvents();
   }
   function handleTodoList(e: MouseEvent) {
-    console.log("handle todo list");
     const target = e.target as HTMLElement;
     const tagName = target.tagName.toLowerCase();
+    const id = Number(target.dataset.id);
     if (tagName === "button" || tagName === "input") {
       switch (tagName) {
         case "button":
-          todoEvent.removeItem(target);
+          todoEvent.removeItem(id);
           break;
         case "input":
-          todoEvent.changeItemComplete(target as HTMLInputElement);
+          todoEvent.changeItemComplete(id);
           break;
         default:
           break;
@@ -30,13 +30,13 @@ import TodoEvent from "./todoEvent";
     }
   }
   function handleAdd() {
-    console.log("add todo", todoInput.value);
     const data = {
       id: Date.now(),
       content: todoInput.value,
       complete: false,
     };
-    todoEvent.addItem(data, todoContainer);
+    todoEvent.addItem(data);
+    todoInput.value = "";
   }
   function bindEvents() {
     todoContainer.addEventListener("click", handleTodoList);
