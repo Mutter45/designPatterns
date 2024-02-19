@@ -30,9 +30,11 @@ import TodoEvent from "./todoEvent";
     }
   }
   function handleAdd() {
+    const value = todoInput.value.trim();
+    if (!value) return;
     const data = {
       id: Date.now(),
-      content: todoInput.value,
+      content: value,
       complete: false,
     };
     todoEvent.addItem(data);
